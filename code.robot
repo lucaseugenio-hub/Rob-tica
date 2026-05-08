@@ -1,0 +1,96 @@
+// ===== PONTE H =====
+int IN1 = 8;
+int IN2 = 9;
+int IN3 = 11;
+int IN4 = 10;
+
+// ===== SENSORES =====
+int ExEsquerda = A0;
+int Esquerda = A1;
+int Meio = A4;
+int Direita = A2;
+int ExDireita = A3;
+
+// ===== VARIÁVEIS =====
+int ValorExE, ValorE, ValorM, ValorD, ValorExD;
+
+// Ajuste esse valor depois testando
+int limite = 500;
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+}
+
+// ===== MOVIMENTOS =====
+void frente() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+
+void direita() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
+void esquerda() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+
+void parar() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
+
+// ===== LOOP =====
+void loop() {
+
+  // LER SENSORES (AGORA CORRETO)
+  ValorExE = analogRead(ExEsquerda);
+  ValorE   = analogRead(Esquerda);
+  ValorM   = analogRead(Meio);
+  ValorD   = analogRead(Direita);
+  ValorExD = analogRead(ExDireita);
+
+  // DEBUG
+  Serial.print(ValorExE); Serial.print(" ");
+  Serial.print(ValorE); Serial.print(" ");
+  Serial.print(ValorM); Serial.print(" ");
+  Serial.print(ValorD); Serial.print(" ");
+  Serial.println(ValorExD);
+
+  // ===== LÓGICA =====
+
+  // linha no meio
+  if (ValorM < limite) {
+    frente();
+  }
+
+  // linha à esquerda
+  else if (ValorE < limite || ValorExE < limite) {
+    esquerda();
+  }
+
+  // linha à direita
+  else if (ValorD < limite || ValorExD < limite) {
+    direita();
+  }
+
+  // nada detectado
+  else {
+    parar();
+  }
+}
